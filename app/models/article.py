@@ -1,5 +1,5 @@
 import datetime
-from sqlalchemy import String, DateTime, ForeignKey, Text
+from sqlalchemy import String, DateTime,func, ForeignKey, Text
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from ..database import Base
 from typing import TYPE_CHECKING
@@ -14,7 +14,11 @@ class Article(Base):
     title: Mapped[str] = mapped_column(String(100))
     content: Mapped[str| None] = mapped_column(Text, nullable=True)
 
-    scraped_at: Mapped[datetime.datetime] = mapped_column(DateTime)
+    scraped_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime,
+        server_default=func.now(),
+        onupdate=func.now()
+    )
     source_id: Mapped[int] = mapped_column(ForeignKey("sources.id"))
 
     source: Mapped["Source"] = relationship(back_populates="articles")

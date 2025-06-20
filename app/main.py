@@ -1,17 +1,17 @@
 from fastapi import FastAPI
 from .database import engine, Base
-from .models import source, article
-
-
+from . import models
+from .api import sources as sources_api
 Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI(
-    title="Web Scraper API",
-    description="API for scraping using Selenium",
-    version="0.1.0"
+    title="Scraper API",
+    description="API for managing and scraping articles from various sources.",
+    version="1.0.0",
 )
 
+app.include_router(sources_api.router)
 
 @app.get("/")
 def read_root():

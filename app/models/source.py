@@ -2,6 +2,10 @@ import datetime
 from sqlalchemy import String, func, DateTime
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from ..database import Base
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .article import Article  # Avoid circular import issues
 
 class Source(Base):
     __tablename__="sources"
@@ -12,3 +16,5 @@ class Source(Base):
         DateTime,
         server_default=func.now()
     )
+
+    articles: Mapped[list["Article"]] = relationship(back_populates="source")

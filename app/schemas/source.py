@@ -1,5 +1,6 @@
 import datetime
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, HttpUrl, ConfigDict
+
 
 class SourceBase(BaseModel):
     name: str
@@ -9,7 +10,6 @@ class SourceCreate(SourceBase):
     pass
 
 class Source(SourceBase):
+    model_config = ConfigDict(from_attributes=True)
     id: int
     created_at: datetime.datetime
-    class Config:
-        from_attributes=True

@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from .database import engine, Base
 from . import models
 from .api import sources as sources_api
+from .api import articles as articles_api
 Base.metadata.create_all(bind=engine)
 
 
@@ -12,6 +13,7 @@ app = FastAPI(
 )
 
 app.include_router(sources_api.router)
+app.include_router(articles_api.router)
 
 @app.get("/")
 def read_root():

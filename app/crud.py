@@ -18,3 +18,17 @@ def create_source(db: Session, source: schemas.SourceCreate):
     db.commit()
     db.refresh(db_source)
     return db_source
+
+def get_article(db: Session, article_id: int):
+    return db.query(models.Article).filter(models.Article.id == article_id).first()
+
+def get_articles(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Article).offset(skip).limit(limit).all()
+
+def delete_article(db: Session, article_id: int):
+    article = db.query(models.Article).filter(models.Article.id == article_id).first()
+    if article:
+        db.delete(article)
+        db.commit()
+        return article
+    return None

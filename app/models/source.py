@@ -11,7 +11,7 @@ class Source(Base):
     __tablename__="sources"
     id: Mapped[int]=mapped_column(primary_key=True)
     name: Mapped[str]=mapped_column(String(50))
-    url: Mapped[str]= mapped_column(String(255))
+    url: Mapped[str]= mapped_column(String(255), unique=True)
     created_at: Mapped[datetime.datetime]= mapped_column(
         DateTime,
         server_default=func.now()

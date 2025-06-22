@@ -95,4 +95,4 @@ This is the recommended way to run the application for a consistent and isolated
 3.  **Access the application:**
     The application is now running inside the Docker container. You can access it in your browser:
     -   **API Docs (Swagger):** `http://localhost:8001/docs`
-    -   **API Docs (ReDoc):** `http://localhost:8001/redoc
+    -   **API Docs (ReDoc):** `http://localhost:8001/redoc`

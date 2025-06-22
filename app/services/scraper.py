@@ -6,15 +6,18 @@ from bs4 import BeautifulSoup
 
 def scrape_article(url):
     # Set up Chrome options
+
     chrome_options = Options()
     chrome_options.add_argument("--headless")  # Run in headless mode
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
 
     # Initialize the WebDriver
+    CHROME_DRIVER_PATH = "/usr/local/bin/chromedriver-linux64/chromedriver"
+    service = ChromeService(executable_path=CHROME_DRIVER_PATH)
     driver = None
     try:
-        driver = webdriver.Chrome(service=ChromeService(), options=chrome_options)
+        driver = webdriver.Chrome(service=service, options=chrome_options)
         driver.get(url)
         page_source = driver.page_source
         doc=Document(page_source)

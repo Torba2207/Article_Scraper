@@ -8,13 +8,14 @@ def scrape_article(url):
     # Set up Chrome options
 
     chrome_options = Options()
+    chrome_options.binary_location = "/usr/bin/google-chrome"
     chrome_options.add_argument("--headless")  # Run in headless mode
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
-
+    chrome_options.add_argument("--remote-debugging-port=9222")
     # Initialize the WebDriver
     #CHROME_DRIVER_PATH = "/usr/local/bin/chromedriver-linux64/chromedriver"
-    service = Service()
+    service = Service(executable_path="/usr/bin/chromedriver")
     driver = None
     try:
         driver = webdriver.Chrome(service=service, options=chrome_options)

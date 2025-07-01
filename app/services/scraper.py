@@ -1,6 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.chrome.service import Service
 from readability import Document
 from bs4 import BeautifulSoup
 
@@ -13,8 +13,8 @@ def scrape_article(url):
     chrome_options.add_argument("--disable-dev-shm-usage")
 
     # Initialize the WebDriver
-    CHROME_DRIVER_PATH = "/usr/local/bin/chromedriver-linux64/chromedriver"
-    service = ChromeService(executable_path=CHROME_DRIVER_PATH)
+    #CHROME_DRIVER_PATH = "/usr/local/bin/chromedriver-linux64/chromedriver"
+    service = Service()
     driver = None
     try:
         driver = webdriver.Chrome(service=service, options=chrome_options)

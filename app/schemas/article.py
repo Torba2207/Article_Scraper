@@ -1,7 +1,7 @@
 import datetime
 
 from pydantic import BaseModel, ConfigDict
-from typing import Optional
+from typing import Optional, List, Dict, Any
 from .source import Source as SourceSchema
 
 class ArticleBase(BaseModel):
@@ -18,3 +18,7 @@ class Article(ArticleBase):
     scraped_at: datetime.datetime
     source: SourceSchema
 
+class ScrapedArticlesResponse(BaseModel):
+    message: str
+    source_id: int
+    scraped_articles: List[Dict[str, Any]]

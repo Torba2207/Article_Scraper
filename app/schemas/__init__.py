@@ -1,2 +1,2 @@
 from .source import Source, SourceCreate, SourceBase
-from .article import Article, ArticleCreate, ArticleBase
+from .article import Article, ArticleCreate, ArticleBase, ScrapedArticlesResponse

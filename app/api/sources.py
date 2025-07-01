@@ -4,7 +4,9 @@ from typing import List
 
 from .. import crud, models, schemas
 from ..dependencies import get_db
-from ..services import scraper
+from ..services import ArticleScraper
+
+
 
 router = APIRouter(
     prefix="/sources",
@@ -39,7 +41,7 @@ def create_new_source(source: schemas.SourceCreate, db: Session = Depends(get_db
         raise HTTPException(status_code=400, detail=f"Source with URL '{source.url}' already registered")
     return crud.create_source(db=db, source=source)
 
-@router.post("/{source_id}/scrape", response_model=schemas.Article, status_code=status.HTTP_202_ACCEPTED)
+@router.post("/{source_id}/scrape", response_model=schemas.ScrapedArticlesResponse, status_code=status.HTTP_202_ACCEPTED)
 def scrape_article_from_source(source_id: int, db: Session = Depends(get_db)):
     source = crud.get_source(db, source_id=source_id)
     if not source:
@@ -47,17 +49,23 @@ def scrape_article_from_source(source_id: int, db: Session = Depends(get_db)):
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Source not found"
         )
-    # Call the scraper service to scrape articles from the source
-    scraped_data = scraper.scrape_article(str(source.url))
-    if not scraped_data:
+    with ArticleScraper.ArticleScraper() as scraper:
+        scraped_articles = scraper.crawl_source(str(source.url))
+
+    if not scraped_articles:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to scrape data from the source"
+            detail="Failed to scrape article from source"
         )
-    article_create = schemas.ArticleCreate(
-        title=scraped_data.get("title"),
-        content=scraped_data.get("content"),
-        source_id=source_id
-    )
+    saved_count = 0
+    for article in scraped_articles:
+        db_article = schemas.ArticleCreate(title=article['title'], content=article['content'], source_id=source_id)
+        saved_article = crud.scrape_article(db=db, article=db_article, source_id=source_id)
+        if saved_article:
+            saved_count += 1
 
-    return crud.scrape_article(db=db, article=article_create, source_id=source_id)
+    return {
+        "message": f"Successfully scraped and saved {saved_count} articles from source '{source.name}'",
+        "source_id": source_id,
+        "scraped_articles": scraped_articles
+    }
